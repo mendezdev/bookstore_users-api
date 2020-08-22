@@ -6,23 +6,25 @@ import (
 	"log"
 	"os"
 
+	// this is because sql.Open need it
 	_ "github.com/go-sql-driver/mysql"
 )
 
 const (
-	mysql_users_username = "mysql_users_username"
-	mysql_users_password = "mysql_users_password"
-	mysql_users_host     = "mysql_users_host"
-	mysql_users_schema   = "mysql_users_schema"
+	mysqlUsersUsername = "mysql_users_username"
+	mysqlUsersPassword = "mysql_users_password"
+	mysqlUsersHost     = "mysql_users_host"
+	mysqlUsersSchema   = "mysql_users_schema"
 )
 
 var (
+	// Client this is client to make request to the db
 	Client *sql.DB
 
-	username = os.Getenv(mysql_users_username)
-	password = os.Getenv(mysql_users_password)
-	host     = os.Getenv(mysql_users_host)
-	schema   = os.Getenv(mysql_users_schema)
+	username = os.Getenv(mysqlUsersUsername)
+	password = os.Getenv(mysqlUsersPassword)
+	host     = os.Getenv(mysqlUsersHost)
+	schema   = os.Getenv(mysqlUsersSchema)
 )
 
 func init() {
