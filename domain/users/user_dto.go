@@ -1,6 +1,7 @@
 package users
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/mendezdev/bookstore_users-api/utils/errors"
@@ -17,12 +18,13 @@ type User struct {
 	Email       string `json:"email"`
 	DateCreated string `json:"date_created"`
 	Status      string `json:"status"`
-	Password    string `json:"status"`
+	Password    string `json:"password"`
 }
 
 type Users []User
 
 func (user *User) Validate() *errors.RestErr {
+	fmt.Println(user)
 	user.FirstName = strings.TrimSpace(user.FirstName)
 	user.LastName = strings.TrimSpace(user.LastName)
 

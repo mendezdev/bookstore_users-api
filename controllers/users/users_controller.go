@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/mendezdev/bookstore_oauth-go/oauth"
 	"github.com/mendezdev/bookstore_users-api/domain/users"
 	"github.com/mendezdev/bookstore_users-api/services"
 	"github.com/mendezdev/bookstore_users-api/utils/errors"
@@ -19,9 +20,10 @@ func getUserId(c *gin.Context) (int64, *errors.RestErr) {
 	return userId, nil
 }
 
+/*
 func isPublic(c *gin.Context) bool {
 	return c.GetHeader("X-Public") == "true"
-}
+}*/
 
 func CreateUser(c *gin.Context) {
 	var user users.User
@@ -37,10 +39,15 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, result.Marshall(isPublic(c)))
+	c.JSON(http.StatusCreated, result.Marshall(oauth.IsPublic(c.Request)))
 }
 
 func Get(c *gin.Context) {
+	if err := oauth.AuthenticateRequest(c.Request); err != nil {
+		c.JSON(err.Status, err)
+		return
+	}
+
 	userId, idErr := getUserId(c)
 	if idErr != nil {
 		c.JSON(idErr.Status, idErr)
@@ -52,7 +59,12 @@ func Get(c *gin.Context) {
 		c.JSON(getErr.Status, getErr)
 		return
 	}
-	c.JSON(http.StatusOK, user.Marshall(isPublic(c)))
+
+	if oauth.GetCallerId(c.Request) == user.Id {
+		c.JSON(http.StatusOK, user.Marshall(false))
+		return
+	}
+	c.JSON(http.StatusOK, user.Marshall(oauth.IsPublic(c.Request)))
 }
 
 func Update(c *gin.Context) {
@@ -76,7 +88,7 @@ func Update(c *gin.Context) {
 		c.JSON(err.Status, err)
 		return
 	}
-	c.JSON(http.StatusOK, result.Marshall(isPublic(c)))
+	c.JSON(http.StatusOK, result.Marshall(oauth.IsPublic(c.Request)))
 }
 
 func Delete(c *gin.Context) {
@@ -100,5 +112,20 @@ func Search(c *gin.Context) {
 		c.JSON(err.Status, err)
 		return
 	}
-	c.JSON(http.StatusOK, users.Marshall(isPublic(c)))
+	c.JSON(http.StatusOK, users.Marshall(oauth.IsPublic(c.Request)))
+}
+
+func Login(c *gin.Context) {
+	var request users.LoginRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		restErr := errors.NewBadRequestError("invalid json body")
+		c.JSON(restErr.Status, restErr)
+		return
+	}
+	user, err := services.UsersService.LoginUser(request)
+	if err != nil {
+		c.JSON(err.Status, err)
+		return
+	}
+	c.JSON(http.StatusCreated, user.Marshall(oauth.IsPublic(c.Request)))
 }
