@@ -31,6 +31,8 @@ github.com/mendezdev/bookstore_oauth-go v0.0.0-20200829221404-68f664ee0f2c h1:WU
 github.com/mendezdev/bookstore_oauth-go v0.0.0-20200829221404-68f664ee0f2c/go.mod h1:4j+p/72PuxORabdtZFqFChUujG8AwJgVSrkp7YEQGS4=
 github.com/mendezdev/bookstore_oauth-go v0.0.0-20200829223400-6a012018e3f8 h1:OZtHP652zXt9wgw1UlzhkxQuOxGJTS1dPEAC0OYQrxA=
 github.com/mendezdev/bookstore_oauth-go v0.0.0-20200829223400-6a012018e3f8/go.mod h1:4j+p/72PuxORabdtZFqFChUujG8AwJgVSrkp7YEQGS4=
+github.com/mendezdev/bookstore_utils-go v0.0.0-20200830023147-5db170d1a5b3 h1:z8we7b4LPCAm4f93UPpe0gv6GZRd9KAurGb2KJfnTr0=
+github.com/mendezdev/bookstore_utils-go v0.0.0-20200830023147-5db170d1a5b3/go.mod h1:+N5P6OHu0Ak0TncTr2DR8evYW7jX/AGEcbmaQzf9RT4=
 github.com/mendezdev/golang-restclient v0.0.0-20191104170228-162ed620df66 h1:vHE85PiaJA2zKchTq7UAMP9YdrBaaL0biKNKepkuRB4=
 github.com/mendezdev/golang-restclient v0.0.0-20191104170228-162ed620df66/go.mod h1:owu7NHkoqyxM2A+FGEdFLX3w0PKXgXLv3FRo9hMJO2U=
 github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421/go.mod h1:6dJC0mAP4ikYIbvyc7fijjWJddQyLn8Ig3JB5CqoB9Q=
@@ -41,6 +43,7 @@ github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFR
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
+github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/ugorji/go v1.1.7 h1:/68gy2h+1mWMrwZFeD1kQialdSzAb432dtpeJ42ovdo=
 github.com/ugorji/go v1.1.7/go.mod h1:kZn38zHttfInRq0xu/PH0az30d+z6vm202qpg1oXVMw=
 github.com/ugorji/go/codec v1.1.7 h1:2SvQaVZ1ouYrrKKwoSk2pzd4A9evlKJb9oTL+OaLUSs=
@@ -78,4 +81,5 @@ gopkg.in/errgo.v2 v2.1.0/go.mod h1:hNsd1EY+bozCKY1Ytp96fpM3vjJbqLJn88ws8XvfDNI=
 gopkg.in/yaml.v2 v2.2.2/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
 gopkg.in/yaml.v2 v2.2.8 h1:obN1ZagJSUGI0Ek/LBmuj4SNLPfIny3KsKFopxRdj10=
 gopkg.in/yaml.v2 v2.2.8/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
+gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
 honnef.co/go/tools v0.0.1-2019.2.3/go.mod h1:a3bituU0lyd329TUQxRnasdCoJDkEUEAqEt0JzvZhAg=

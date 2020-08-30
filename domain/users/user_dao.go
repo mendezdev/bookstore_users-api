@@ -6,8 +6,8 @@ import (
 
 	"github.com/mendezdev/bookstore_users-api/datasources/mysql/users_db"
 	"github.com/mendezdev/bookstore_users-api/logger"
-	"github.com/mendezdev/bookstore_users-api/utils/errors"
 	"github.com/mendezdev/bookstore_users-api/utils/mysql_utils"
+	"github.com/mendezdev/bookstore_utils-go/rest_errors"
 )
 
 const (
@@ -23,90 +23,90 @@ var (
 	usersDB = make(map[int64]*User)
 )
 
-func (user *User) Get() *errors.RestErr {
+func (user *User) Get() *rest_errors.RestErr {
 	stmt, err := users_db.Client.Prepare(queryGetUser)
 	if err != nil {
 		logger.Error("error when trying to prepare get user statement", err)
-		return getGenericDatabaseError()
+		return getGenericDatabaseError(err)
 	}
 	defer stmt.Close()
 
 	result := stmt.QueryRow(user.Id)
 	if getErr := result.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.DateCreated, &user.Status); getErr != nil {
 		logger.Error("error when trying to get user by id", getErr)
-		return getGenericDatabaseError()
+		return getGenericDatabaseError(getErr)
 	}
 
 	return nil
 }
 
-func (user *User) Save() *errors.RestErr {
+func (user *User) Save() *rest_errors.RestErr {
 	stmt, err := users_db.Client.Prepare(queryInsertUser)
 	if err != nil {
 		logger.Error("error when trying to prepare save user statement", err)
-		return getGenericDatabaseError()
+		return getGenericDatabaseError(err)
 	}
 	defer stmt.Close()
 
 	insertResult, saveErr := stmt.Exec(user.FirstName, user.LastName, user.Email, user.DateCreated, user.Status, user.Password)
 	if saveErr != nil {
 		logger.Error("error when trying to save user", saveErr)
-		return getGenericDatabaseError()
+		return getGenericDatabaseError(saveErr)
 	}
 
 	userId, err := insertResult.LastInsertId()
 	if err != nil {
 		logger.Error("error when trying to get last insert id after creating a new user", err)
-		return getGenericDatabaseError()
+		return getGenericDatabaseError(err)
 	}
 
 	user.Id = userId
 	return nil
 }
 
-func (user *User) Update() *errors.RestErr {
+func (user *User) Update() *rest_errors.RestErr {
 	stmt, err := users_db.Client.Prepare(queryUpdateUser)
 	if err != nil {
 		logger.Error("error when trying to prepare update user statement", err)
-		return getGenericDatabaseError()
+		return getGenericDatabaseError(err)
 	}
 	defer stmt.Close()
 
 	_, err = stmt.Exec(user.FirstName, user.LastName, user.Email, user.Id)
 	if err != nil {
 		logger.Error("error when trying to update user", err)
-		return getGenericDatabaseError()
+		return getGenericDatabaseError(err)
 	}
 	return nil
 }
 
-func (user *User) Delete() *errors.RestErr {
+func (user *User) Delete() *rest_errors.RestErr {
 	stmt, err := users_db.Client.Prepare(queryDeleteUser)
 	if err != nil {
 		logger.Error("error when trying to prepare delete user statement", err)
-		return getGenericDatabaseError()
+		return getGenericDatabaseError(err)
 	}
 	defer stmt.Close()
 
 	if _, err := stmt.Exec(user.Id); err != nil {
 		logger.Error("error when trying to delete user", err)
-		return getGenericDatabaseError()
+		return getGenericDatabaseError(err)
 	}
 	return nil
 }
 
-func (user *User) FindByStatus(status string) ([]User, *errors.RestErr) {
+func (user *User) FindByStatus(status string) ([]User, *rest_errors.RestErr) {
 	stmt, err := users_db.Client.Prepare(queryFindByStatus)
 	if err != nil {
 		logger.Error("error when trying to prepare find users by status statement", err)
-		return nil, getGenericDatabaseError()
+		return nil, getGenericDatabaseError(err)
 	}
 	defer stmt.Close()
 
 	rows, err := stmt.Query(status)
 	if err != nil {
 		logger.Error("error when trying to execute query find users by stauts statement", err)
-		return nil, getGenericDatabaseError()
+		return nil, getGenericDatabaseError(err)
 	}
 
 	results := make([]User, 0)
@@ -114,37 +114,37 @@ func (user *User) FindByStatus(status string) ([]User, *errors.RestErr) {
 		var user User
 		if err := rows.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.DateCreated, &user.Status); err != nil {
 			logger.Error("error when trying to scan user row user struct", err)
-			return nil, getGenericDatabaseError()
+			return nil, getGenericDatabaseError(err)
 		}
 		results = append(results, user)
 	}
 
 	if len(results) == 0 {
-		return nil, errors.NewNotFoundError(fmt.Sprintf("no users matching status %s", status))
+		return nil, rest_errors.NewNotFoundError(fmt.Sprintf("no users matching status %s", status))
 	}
 	return results, nil
 }
 
-func (user *User) FindByEmailAndPassword() *errors.RestErr {
+func (user *User) FindByEmailAndPassword() *rest_errors.RestErr {
 	stmt, err := users_db.Client.Prepare(queryFindByEmailAndPassword)
 	if err != nil {
 		logger.Error("error when trying to prepare get user by email and password statement", err)
-		return getGenericDatabaseError()
+		return getGenericDatabaseError(err)
 	}
 	defer stmt.Close()
 
 	result := stmt.QueryRow(user.Email, user.Password, StatusActive)
 	if getErr := result.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.DateCreated, &user.Status); getErr != nil {
 		if strings.Contains(getErr.Error(), mysql_utils.ErrorNoRows) {
-			return errors.NewNotFoundError("invalid user credentials")
+			return rest_errors.NewNotFoundError("invalid user credentials")
 		}
 		logger.Error("error when trying to get user by email and password", getErr)
-		return getGenericDatabaseError()
+		return getGenericDatabaseError(getErr)
 	}
 
 	return nil
 }
 
-func getGenericDatabaseError() *errors.RestErr {
-	return errors.NewInternalServerError("database error")
+func getGenericDatabaseError(err error) *rest_errors.RestErr {
+	return rest_errors.NewInternalServerError("database error", err)
 }
